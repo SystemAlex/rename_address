@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Video URL to Embed",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Redirecciona enlaces de video a embed link de forma automática.",
   "author": "SystemAlex",
   "icons": {
@@ -32,5 +32,17 @@
         "path": "rules.json"
       }
     ]
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://streamtape.com/e/*",
+        "https://sendvid.com/embed/*",
+        "https://uqload.net/embed-*",
+        "https://vidtube.one/embed-*",
+        "https://cybervynx.com/e/*"
+      ],
+      "js": [ "fullscreen.js" ]
+    }
+  ]
 }
