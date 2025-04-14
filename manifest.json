@@ -48,7 +48,7 @@
         "https://voe.sx/e/*",
         "https://jennifercertaindevelopment.com/e/*"
       ],
-      "js": ["fullscreen.js"]
+      "js": [ "fullscreen.js" ]
     }
   ]
 }
