@@ -1,32 +1,89 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <title>Opciones de Video URL to Embed</title>
-    <link href="./css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="p-3">
-    <h1>Opciones de la Extensión</h1>
-    <hr />
-    <div class="form-check form-switch mb-3">
-        <label class="form-check-label" for="fullscreenToggle">
-            Activar modo pantalla completa en redirecciones:
-        </label>
-        <input class="form-check-input" type="checkbox" role="switch" id="fullscreenToggle">
-    </div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Opciones de Video URL to Embed</title>
+        <link href="./css/bootstrap.min.css" rel="stylesheet">
+        <link href="./css/bootstrap-icons.min.css" rel="stylesheet">
+    </head>
+    <body class="p-3 user-select-none mb-5">
+        <div class="sticky-top bg-body">
+            <div class="d-flex align-items-center">
+                <img class="me-1" src="icon128.png" alt="Logo" height="48"
+                    width="48" />
+                <h1 class="m-0">Opciones de Video URL to Embed</h1>
+            </div>
+            <hr />
+        </div>
+        <div class="form-check form-switch mb-3">
+            <label class="form-check-label" for="fullscreenToggle">
+                Activar modo pantalla completa en redirecciones:
+            </label>
+            <input class="form-check-input" type="checkbox" role="switch"
+                id="fullscreenToggle">
+        </div>
 
-    <div class="form-check form-switch mb-3">
-        <label class="form-check-label" for="toastToggle">
-            Mostrar notificaciones (mensaje toast):
-        </label>
-        <input class="form-check-input" type="checkbox" role="switch" id="toastToggle">
-    </div>
+        <div class="form-check form-switch mb-3">
+            <label class="form-check-label" for="toastToggle">
+                Mostrar notificaciones (mensaje toast):
+            </label>
+            <input class="form-check-input" type="checkbox" role="switch"
+                id="toastToggle">
+        </div>
 
-    <button class="btn btn-primary" id="saveButton">Guardar Opciones</button>
+        <div
+            class="card d-inline-block text-success-emphasis bg-success-subtle border-success-subtle">
+            <div class="card-header">
+                Se aplica a:
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush border-0">
+                    <a
+                        class="list-group-item list-group-item-action list-group-item-success border-0"
+                        href="https://sendvid.com/" target="_blank"
+                        rel="noopener"><i
+                            class="bi bi-box-arrow-up-right me-1"></i>https://sendvid.com/*</a>
+                    <a
+                        class="list-group-item list-group-item-action list-group-item-success border-0"
+                        href="https://streamtape.com/" target="_blank"
+                        rel="noopener"><i
+                            class="bi bi-box-arrow-up-right me-1"></i>https://streamtape.com/*</a>
+                    <a
+                        class="list-group-item list-group-item-action list-group-item-success border-0"
+                        href="https://uqload.net/" target="_blank"
+                        rel="noopener"><i
+                            class="bi bi-box-arrow-up-right me-1"></i>https://uqload.net/*</a>
+                    <a
+                        class="list-group-item list-group-item-action list-group-item-success border-0"
+                        href="https://vidtube.one/" target="_blank"
+                        rel="noopener"><i
+                            class="bi bi-box-arrow-up-right me-1"></i>https://vidtube.one/*</a>
+                    <a
+                        class="list-group-item list-group-item-action list-group-item-success border-0"
+                        href="https://voe.sx/" target="_blank" rel="noopener"><i
+                            class="bi bi-box-arrow-up-right me-1"></i>https://voe.sx/*</a>
+                    <a
+                        class="list-group-item list-group-item-action list-group-item-success border-0"
+                        href="https://jennifercertaindevelopment.com/"
+                        target="_blank" rel="noopener"><i
+                            class="bi bi-box-arrow-up-right me-1"></i>https://jennifercertaindevelopment.com/*</a>
+                </div>
+            </div>
+        </div>
 
-    <script src="./js/bootstrap.bundle.min.js"></script>
-    <script src="./js/bootstrap.min.js"></script>
-    <script src="funciones.js"></script>
-    <script src="options.js"></script>
-</body>
+        <button class="btn btn-primary position-fixed bottom-0 start-0 m-3"
+            id="saveButton" type="button">Guardar Opciones</button>
+
+        <small
+            class="position-fixed bottom-0 end-0 alert alert-primary m-3 text-muted py-1 px-2 shadow-sm"
+            role="alert">
+            by SystemAlex
+        </small>
+
+        <script src="./js/bootstrap.bundle.min.js"></script>
+        <script src="./js/bootstrap.min.js"></script>
+        <script src="funciones.js"></script>
+        <script src="options.js"></script>
+    </body>
 </html>

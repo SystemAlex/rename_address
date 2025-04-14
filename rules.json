@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "id": 1,
     "priority": 1,
@@ -10,7 +10,7 @@
     },
     "condition": {
       "regexFilter": "^https://streamtape\\.com/v/(.*)$",
-      "resourceTypes": [ "main_frame" ]
+      "resourceTypes": ["main_frame"]
     }
   },
   {
@@ -24,7 +24,7 @@
     },
     "condition": {
       "regexFilter": "^https://sendvid\\.com/([^/]+)/?$",
-      "resourceTypes": [ "main_frame" ]
+      "resourceTypes": ["main_frame"]
     }
   },
   {
@@ -38,7 +38,7 @@
     },
     "condition": {
       "regexFilter": "^https://uqload\\.net/([^-]+)$",
-      "resourceTypes": [ "main_frame" ]
+      "resourceTypes": ["main_frame"]
     }
   },
   {
@@ -52,39 +52,11 @@
     },
     "condition": {
       "regexFilter": "^https://vidtube\\.one/([^-]+)$",
-      "resourceTypes": [ "main_frame" ]
+      "resourceTypes": ["main_frame"]
     }
   },
   {
     "id": 5,
-    "priority": 1,
-    "action": {
-      "type": "redirect",
-      "redirect": {
-        "regexSubstitution": "https://cybervynx.com/e/\\1"
-      }
-    },
-    "condition": {
-      "regexFilter": "^https://sw[a-zA-Z0-9]{3}\\.com/([^/]+)$",
-      "resourceTypes": [ "main_frame" ]
-    }
-  },
-  {
-    "id": 6,
-    "priority": 1,
-    "action": {
-      "type": "redirect",
-      "redirect": {
-        "regexSubstitution": "https://cybervynx.com/e/\\1"
-      }
-    },
-    "condition": {
-      "regexFilter": "^https://wishonly\\.site/([^/]+)$",
-      "resourceTypes": [ "main_frame" ]
-    }
-  },
-  {
-    "id": 7,
     "priority": 1,
     "action": {
       "type": "redirect",
@@ -94,7 +66,7 @@
     },
     "condition": {
       "regexFilter": "^https://voe\\.sx/([^/]+)$",
-      "resourceTypes": [ "main_frame" ]
+      "resourceTypes": ["main_frame"]
     }
   }
 ]

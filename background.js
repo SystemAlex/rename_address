@@ -1,1 +1,1 @@
-/* background.js */
+﻿/* background.js */
