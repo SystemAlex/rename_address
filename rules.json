@@ -65,7 +65,35 @@
       }
     },
     "condition": {
-      "regexFilter": "^https://swhoi\\.com/([^/]+)$",
+      "regexFilter": "^https://sw[a-zA-Z0-9]{3}\\.com/([^/]+)$",
+      "resourceTypes": [ "main_frame" ]
+    }
+  },
+  {
+    "id": 6,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "regexSubstitution": "https://cybervynx.com/e/\\1"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://wishonly\\.site/([^/]+)$",
+      "resourceTypes": [ "main_frame" ]
+    }
+  },
+  {
+    "id": 7,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "regexSubstitution": "https://voe.sx/e/\\1"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://voe\\.sx/([^/]+)$",
       "resourceTypes": [ "main_frame" ]
     }
   }
