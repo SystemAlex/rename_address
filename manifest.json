@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Video URL to Embed",
+  "version": "1.0.5",
+  "description": "Redirecciona enlaces de video a embed link de forma automática.",
+  "author": "SystemAlex",
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "128": "icon128.png"
+  },
+  "permissions": [
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess"
+  ],
+  "host_permissions": [
+    "https://streamtape.com/*",
+    "https://sendvid.com/*",
+    "https://uqload.net/*",
+    "https://vidtube.one/*",
+    "https://swhoi.com/*",
+    "https://cybervynx.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset_1",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  }
+}
