@@ -1,0 +1,26 @@
+﻿[
+  {
+    "regex": "^https:\\/\\/streamtape\\.com\\/v\\/(.*)$",
+    "substitution": "https://streamtape.com/e/$1"
+  },
+  {
+    "regex": "^https:\\/\\/sendvid\\.com\\/([^/]+)\\/?$",
+    "substitution": "https://sendvid.com/embed/$1"
+  },
+  {
+    "regex": "^https:\\/\\/uqload\\.net\\/(?!embed-)([^-]+)$",
+    "substitution": "https://uqload.net/embed-$1"
+  },
+  {
+    "regex": "^https:\\/\\/vidtube\\.one\\/(?!embed-)([^-]+)$",
+    "substitution": "https://vidtube.one/embed-$1"
+  },
+  {
+    "regex": "^https:\\/\\/voe\\.sx\\/([^/]+)$",
+    "substitution": "https://voe.sx/e/$1"
+  },
+  {
+    "regex": "^https:\\/\\/www\\.dailymotion\\.com\\/video\\/(.*)$",
+    "substitution": "https://geo.dailymotion.com/player.html?video=$1"
+  }
+]

@@ -68,5 +68,19 @@
       "regexFilter": "^https://voe\\.sx/([^/]+)$",
       "resourceTypes": [ "main_frame" ]
     }
+  },
+  {
+    "id": 6,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "regexSubstitution": "https://geo.dailymotion.com/player.html?video=\\1"
+      }
+    },
+    "condition": {
+      "regexFilter": "^https://www.dailymotion\\.com/video/(.*)$",
+      "resourceTypes": [ "main_frame" ]
+    }
   }
 ]

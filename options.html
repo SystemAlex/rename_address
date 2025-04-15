@@ -16,25 +16,36 @@
         <hr />
     </div>
 
-    <div class="form-check form-switch mb-3">
-        <label class="form-check-label" for="redirectionToggle">
-            Activar redirección de URL:
-        </label>
-        <input class="form-check-input" type="checkbox" role="switch" id="redirectionToggle">
-    </div>
+    <div class="card d-table mb-3">
+        <div class="card-body">
+            <div class="form-check form-switch mb-3">
+                <label class="form-check-label" for="redirectionToggle">
+                    Activar redirección de URL:
+                </label>
+                <input class="form-check-input" type="checkbox" role="switch" id="redirectionToggle">
+            </div>
 
-    <div class="form-check form-switch mb-3">
-        <label class="form-check-label" for="fullscreenToggle">
-            Activar modo pantalla completa en redirecciones:
-        </label>
-        <input class="form-check-input" type="checkbox" role="switch" id="fullscreenToggle">
-    </div>
+            <div class="form-check form-switch mb-3">
+                <label class="form-check-label" for="confirmToggle">
+                    Confrimar ante redireccionar:
+                </label>
+                <input class="form-check-input" type="checkbox" role="switch" id="confirmToggle">
+            </div>
 
-    <div class="form-check form-switch mb-3">
-        <label class="form-check-label" for="toastToggle">
-            Mostrar notificaciones (mensaje toast):
-        </label>
-        <input class="form-check-input" type="checkbox" role="switch" id="toastToggle">
+            <div class="form-check form-switch mb-3">
+                <label class="form-check-label" for="fullscreenToggle">
+                    Activar modo pantalla completa en redirecciones:
+                </label>
+                <input class="form-check-input" type="checkbox" role="switch" id="fullscreenToggle">
+            </div>
+
+            <div class="form-check form-switch">
+                <label class="form-check-label" for="toastToggle">
+                    Mostrar notificaciones (mensaje toast):
+                </label>
+                <input class="form-check-input" type="checkbox" role="switch" id="toastToggle">
+            </div>
+        </div>
     </div>
 
     <div class="card d-inline-block text-success-emphasis bg-success-subtle border-success-subtle">
@@ -57,7 +68,7 @@
 
     <script src="./js/bootstrap.bundle.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
-    <script src="./js/funciones.js"></script>
+    <script src="./js/functions.js"></script>
     <script src="./js/options.js"></script>
 </body>
 </html>

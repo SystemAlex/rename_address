@@ -2,67 +2,101 @@
     const fullscreenEnabled = document.getElementById("fullscreenToggle").checked;
     const toastEnabled = document.getElementById("toastToggle").checked;
     const redirectionEnabled = document.getElementById('redirectionToggle').checked;
-    chrome.storage.sync.set({ fullscreenEnabled, toastEnabled, redirectionEnabled }, function () {
+    const redirectionConfirmation = document.getElementById('confirmToggle').checked;
+    chrome.storage.sync.set({ fullscreenEnabled, toastEnabled, redirectionEnabled, redirectionConfirmation }, function () {
         showToast("Opciones guardadas!");
     });
 }
 
-// Función para restaurar opciones al cargar la página
 function restoreOptions() {
     chrome.storage.sync.get(
-        ["fullscreenEnabled", "toastEnabled", "redirectionEnabled"],
+        ["fullscreenEnabled", "toastEnabled", "redirectionEnabled", "redirectionConfirmation"],
         function (data) {
-            document.getElementById("fullscreenToggle").checked = data.fullscreenEnabled || false;
-            document.getElementById("toastToggle").checked = data.toastEnabled || false;
-            document.getElementById('redirectionToggle').checked = data.redirectionEnabled || true;
+            document.getElementById("fullscreenToggle").checked = data.fullscreenEnabled;
+            document.getElementById("toastToggle").checked = data.toastEnabled;
+            document.getElementById('redirectionToggle').checked = data.redirectionEnabled;
+            document.getElementById('confirmToggle').checked = data.redirectionConfirmation;
         }
     );
 }
 
-// Cargar las opciones al iniciar la página
 document.addEventListener("DOMContentLoaded", restoreOptions);
-// Guardar las opciones cuando se haga clic en el botón
 document.getElementById("saveButton").addEventListener("click", saveOptions);
 
-fetch('./js/rules.json') // Cargar el archivo JSON
+//fetch('./js/rules.json') 
+//    .then(response => response.json())
+//    .then(data => {
+//        const urlList = document.getElementById('urlList');
+
+//        data.forEach(rule => {
+//            const redirectUrl = rule.condition.regexFilter.split("\\")[0].split("^")[1] + rule.condition.regexFilter.split("\\")[1].split("/")[0] + "/";
+//            const regexFilter = redirectUrl + "*";
+
+//            fetchData(redirectUrl).then(data => {
+//                const { favicon, title } = data;
+
+//                const linkItem = document.createElement('a');
+//                linkItem.className = 'list-group-item list-group-item-action list-group-item-success border-0 d-flex align-items-center';
+//                linkItem.href = redirectUrl;
+//                linkItem.target = '_blank';
+//                linkItem.rel = 'noopener';
+
+//                const icon = document.createElement('i');
+//                icon.className = 'bi bi-box-arrow-up-right ms-1';
+
+//                if (favicon) {
+//                    const faviconImg = document.createElement('img');
+//                    faviconImg.src = favicon;
+//                    faviconImg.alt = 'Favicon';
+//                    faviconImg.className = 'me-1';
+//                    faviconImg.width = 24;
+//                    faviconImg.height = 24;
+
+//                    linkItem.appendChild(faviconImg);
+//                }
+//                linkItem.appendChild(document.createTextNode(title ? title + " - " : "" + regexFilter));
+//                linkItem.appendChild(icon);
+
+//                urlList.appendChild(linkItem);
+//            });
+//        });
+//    })
+//    .catch(error => console.error('Error al cargar las reglas:', error));
+
+fetch('./js/redirectRules.json')
     .then(response => response.json())
     .then(data => {
-        const urlList = document.getElementById('urlList'); // Obtén el div por su id
+        const urlList = document.getElementById('urlList');
 
         data.forEach(rule => {
-            // Extraer el URL base y formato del regexSubstitution
-            const redirectUrl = rule.condition.regexFilter.split("\\")[0].split("^")[1] + rule.condition.regexFilter.split("\\")[1].split("/")[0] + "/";
+            const redirectUrl = rule.regex.replace(/[\^\\]/g, '').match(/^(https:\/\/[^/]+\/)/)[1];
             const regexFilter = redirectUrl + "*";
-
 
             fetchData(redirectUrl).then(data => {
                 const { favicon, title } = data;
 
-                // Crear el elemento `a`
                 const linkItem = document.createElement('a');
                 linkItem.className = 'list-group-item list-group-item-action list-group-item-success border-0 d-flex align-items-center';
-                linkItem.href = redirectUrl; // URL del enlace
+                linkItem.href = redirectUrl;
                 linkItem.target = '_blank';
                 linkItem.rel = 'noopener';
 
-                //Crear Favicon
-                const faviconImg = document.createElement('img');
-                faviconImg.src = favicon;
-                faviconImg.alt = 'Favicon';
-                faviconImg.className = 'me-1';
-                faviconImg.width = 24; // Ajustar el tamaño del favicon
-                faviconImg.height = 24; // Ajustar el tamaño del favicon
-
-                // Crear el ícono
                 const icon = document.createElement('i');
                 icon.className = 'bi bi-box-arrow-up-right ms-1';
 
-                // Añadir el ícono y el texto
-                linkItem.appendChild(faviconImg);
-                linkItem.appendChild(document.createTextNode(title + " - " + regexFilter));
+                if (favicon) {
+                    const faviconImg = document.createElement('img');
+                    faviconImg.src = favicon;
+                    faviconImg.alt = 'Favicon';
+                    faviconImg.className = 'me-1';
+                    faviconImg.width = 24;
+                    faviconImg.height = 24;
+
+                    linkItem.appendChild(faviconImg);
+                }
+                linkItem.appendChild(document.createTextNode((title ? title + " - " : "") + regexFilter));
                 linkItem.appendChild(icon);
 
-                // Agregar el elemento al div
                 urlList.appendChild(linkItem);
             });
         });
@@ -75,15 +109,26 @@ async function fetchData(url) {
         const html = await response.text();
         const doc = new DOMParser().parseFromString(html, "text/html");
         const faviconLink = doc.querySelector("link[rel*='icon']");
-        const faviconUrl = faviconLink.href.replace(location.origin + "/", "");
+        const faviconUrl = faviconLink.href.replace(location.origin + "/", "").replace("chrome-extension://", "https://");
+
+        if (faviconUrl.startsWith("https://")) {
+            newfaviconUrl = faviconUrl;
+        } else {
+            newfaviconUrl = url + faviconUrl;
+        }
 
         data = {
-            "favicon": faviconLink ? url + faviconUrl : null,
+            "favicon": faviconLink ? newfaviconUrl : null,
             "title": doc.title ? doc.title : null,
         }
         return data;
     } catch (error) {
         console.error('Error al obtener el favicon:', error);
-        return null;
+
+        data = {
+            "favicon": null,
+            "title": null,
+        }
+        return data;
     }
 }

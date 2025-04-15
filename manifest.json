@@ -1,7 +1,7 @@
 ﻿{
   "manifest_version": 3,
   "name": "Video URL to Embed",
-  "version": "2.1.0",
+  "version": "3.3.9",
   "description": "Redirecciona enlaces de video a embed link solo si está activado en las opciones.",
   "author": "SystemAlex",
   "icons": {
@@ -10,20 +10,17 @@
     "128": "./assets/icon128.png"
   },
   "permissions": [
+    "storage",
+    "notifications",
     "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess",
-    "storage"
+    "declarativeNetRequestWithHostAccess"
   ],
   "host_permissions": [
-    "https://streamtape.com/*",
-    "https://sendvid.com/*",
-    "https://uqload.net/*",
-    "https://vidtube.one/*",
-    "https://voe.sx/*",
-    "https://jennifercertaindevelopment.com/*"
+    "https://*/*",
+    "http://*/*"
   ],
   "background": {
-    "service_worker": "./js/background.js"
+    "service_worker": "js/background.js"
   },
   "options_ui": {
     "page": "options.html",
@@ -32,14 +29,33 @@
   "content_scripts": [
     {
       "matches": [
+        "https://streamtape.com/v/*",
+        "https://sendvid.com/*",
+        "https://uqload.net/*",
+        "https://vidtube.one/*",
+        "https://voe.sx/*",
+        "https://www.dailymotion.com/video/*"
+      ],
+      "js": [ "js/functions.js", "js/redirect.js" ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
         "https://streamtape.com/e/*",
         "https://sendvid.com/embed/*",
         "https://uqload.net/embed-*",
         "https://vidtube.one/embed-*",
         "https://voe.sx/e/*",
-        "https://jennifercertaindevelopment.com/e/*"
+        "https://jennifercertaindevelopment.com/e/*",
+        "https://geo.dailymotion.com/*"
       ],
-      "js": [ "./js/fullscreen.js" ]
+      "js": [ "js/functions.js", "js/fullscreen.js" ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [ "js/redirectRules.json" ],
+      "matches": [ "<all_urls>" ]
     }
   ]
 }
