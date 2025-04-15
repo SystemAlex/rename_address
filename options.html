@@ -10,11 +10,19 @@
 <body class="p-3 user-select-none mb-5">
     <div class="sticky-top bg-body">
         <div class="d-flex align-items-center">
-            <img class="me-1" src="icon128.png" alt="Logo" height="48" width="48" />
+            <img class="me-1" src="./assets/icon128.png" alt="Logo" height="48" width="48" />
             <h1 class="m-0">Opciones de Video URL to Embed</h1>
         </div>
         <hr />
     </div>
+
+    <div class="form-check form-switch mb-3">
+        <label class="form-check-label" for="redirectionToggle">
+            Activar redirección de URL:
+        </label>
+        <input class="form-check-input" type="checkbox" role="switch" id="redirectionToggle">
+    </div>
+
     <div class="form-check form-switch mb-3">
         <label class="form-check-label" for="fullscreenToggle">
             Activar modo pantalla completa en redirecciones:
@@ -34,25 +42,7 @@
             Se aplica a:
         </div>
         <div class="card-body">
-            <div class="list-group list-group-flush border-0">
-                <a class="list-group-item list-group-item-action list-group-item-success border-0" href="https://sendvid.com/" target="_blank" rel="noopener">
-                    <i class="bi bi-box-arrow-up-right me-1"></i>https://sendvid.com/*
-                </a>
-                <a class="list-group-item list-group-item-action list-group-item-success border-0" href="https://streamtape.com/" target="_blank" rel="noopener">
-                    <i class="bi bi-box-arrow-up-right me-1"></i>https://streamtape.com/*
-                </a>
-                <a class="list-group-item list-group-item-action list-group-item-success border-0" href="https://uqload.net/" target="_blank" rel="noopener">
-                    <i class="bi bi-box-arrow-up-right me-1"></i>https://uqload.net/*
-                </a>
-                <a class="list-group-item list-group-item-action list-group-item-success border-0" href="https://vidtube.one/" target="_blank" rel="noopener">
-                    <i class="bi bi-box-arrow-up-right me-1"></i>https://vidtube.one/*
-                </a>
-                <a class="list-group-item list-group-item-action list-group-item-success border-0" href="https://voe.sx/" target="_blank" rel="noopener">
-                    <i class="bi bi-box-arrow-up-right me-1"></i>https://voe.sx/*
-                </a>
-                <a class="list-group-item list-group-item-action list-group-item-success border-0" href="https://jennifercertaindevelopment.com/" target="_blank" rel="noopener">
-                    <i class="bi bi-box-arrow-up-right me-1"></i>https://jennifercertaindevelopment.com/*
-                </a>
+            <div id="urlList" class="list-group list-group-flush border-0">
             </div>
         </div>
     </div>
@@ -67,7 +57,7 @@
 
     <script src="./js/bootstrap.bundle.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
-    <script src="funciones.js"></script>
-    <script src="options.js"></script>
+    <script src="./js/funciones.js"></script>
+    <script src="./js/options.js"></script>
 </body>
 </html>

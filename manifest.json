@@ -1,13 +1,13 @@
 ﻿{
   "manifest_version": 3,
   "name": "Video URL to Embed",
-  "version": "1.1.6",
-  "description": "Redirecciona enlaces de video a embed link de forma automática.",
+  "version": "2.1.0",
+  "description": "Redirecciona enlaces de video a embed link solo si está activado en las opciones.",
   "author": "SystemAlex",
   "icons": {
-    "16": "icon16.png",
-    "32": "icon32.png",
-    "128": "icon128.png"
+    "16": "./assets/icon16.png",
+    "32": "./assets/icon32.png",
+    "128": "./assets/icon128.png"
   },
   "permissions": [
     "declarativeNetRequest",
@@ -23,16 +23,7 @@
     "https://jennifercertaindevelopment.com/*"
   ],
   "background": {
-    "service_worker": "background.js"
-  },
-  "declarative_net_request": {
-    "rule_resources": [
-      {
-        "id": "ruleset_1",
-        "enabled": true,
-        "path": "rules.json"
-      }
-    ]
+    "service_worker": "./js/background.js"
   },
   "options_ui": {
     "page": "options.html",
@@ -48,7 +39,7 @@
         "https://voe.sx/e/*",
         "https://jennifercertaindevelopment.com/e/*"
       ],
-      "js": [ "fullscreen.js" ]
+      "js": [ "./js/fullscreen.js" ]
     }
   ]
 }
