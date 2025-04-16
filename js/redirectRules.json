@@ -22,5 +22,9 @@
   {
     "regex": "^https:\\/\\/www\\.dailymotion\\.com\\/video\\/(.*)$",
     "substitution": "https://geo.dailymotion.com/player.html?video=$1"
+  },
+  {
+    "regex": "^https:\\/\\/www\\.youtube\\.com\\/watch\\?v=([^&]+)(&.*)?$",
+    "substitution": "https://www.youtube.com/embed/$1"
   }
 ]

@@ -1,4 +1,10 @@
-﻿function showToast(message) {
+﻿chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "showToast" && typeof showToast === "function") {
+        showToast(request.message);
+    }
+});
+
+function showToast(message) {
     chrome.storage.sync.get("toastEnabled", function (data) {
         if (!data.toastEnabled) {
             return;

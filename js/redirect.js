@@ -1,4 +1,11 @@
 ﻿(function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("manualSwitch")) {
+        console.log("Se detectó 'manualSwitch'. Se omite la redirección automática y se remueve el parámetro.");
+        history.replaceState(null, "", window.location.pathname + window.location.hash);
+        return;
+    }
+
     chrome.storage.sync.get(
         ["redirectionEnabled", "redirectionConfirmation"],
         function (config) {
