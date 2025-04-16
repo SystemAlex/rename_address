@@ -9,6 +9,10 @@
 }
 
 function restoreOptions() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
     chrome.storage.sync.get(
         ["fullscreenEnabled", "toastEnabled", "redirectionEnabled", "redirectionConfirmation"],
         function (data) {
@@ -22,46 +26,6 @@ function restoreOptions() {
 
 document.addEventListener("DOMContentLoaded", restoreOptions);
 document.getElementById("saveButton").addEventListener("click", saveOptions);
-
-//fetch('./js/rules.json') 
-//    .then(response => response.json())
-//    .then(data => {
-//        const urlList = document.getElementById('urlList');
-
-//        data.forEach(rule => {
-//            const redirectUrl = rule.condition.regexFilter.split("\\")[0].split("^")[1] + rule.condition.regexFilter.split("\\")[1].split("/")[0] + "/";
-//            const regexFilter = redirectUrl + "*";
-
-//            fetchData(redirectUrl).then(data => {
-//                const { favicon, title } = data;
-
-//                const linkItem = document.createElement('a');
-//                linkItem.className = 'list-group-item list-group-item-action list-group-item-success border-0 d-flex align-items-center';
-//                linkItem.href = redirectUrl;
-//                linkItem.target = '_blank';
-//                linkItem.rel = 'noopener';
-
-//                const icon = document.createElement('i');
-//                icon.className = 'bi bi-box-arrow-up-right ms-1';
-
-//                if (favicon) {
-//                    const faviconImg = document.createElement('img');
-//                    faviconImg.src = favicon;
-//                    faviconImg.alt = 'Favicon';
-//                    faviconImg.className = 'me-1';
-//                    faviconImg.width = 24;
-//                    faviconImg.height = 24;
-
-//                    linkItem.appendChild(faviconImg);
-//                }
-//                linkItem.appendChild(document.createTextNode(title ? title + " - " : "" + regexFilter));
-//                linkItem.appendChild(icon);
-
-//                urlList.appendChild(linkItem);
-//            });
-//        });
-//    })
-//    .catch(error => console.error('Error al cargar las reglas:', error));
 
 fetch('./js/redirectRules.json')
     .then(response => response.json())

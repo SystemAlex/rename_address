@@ -6,6 +6,13 @@
     <title>Opciones de Video URL to Embed</title>
     <link href="./css/bootstrap.min.css" rel="stylesheet">
     <link href="./css/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        .custom-tooltip {
+            --bs-tooltip-bg: var(--bs-info-bg-subtle);
+            --bs-tooltip-color: var(--bs-info-emphasis-color);
+            --bs-tooltip-border-color: var(--bs-info-emphasis-color);
+        }
+    </style>
 </head>
 <body class="p-3 user-select-none mb-5">
     <div class="sticky-top bg-body">
@@ -20,28 +27,29 @@
         <div class="card-body">
             <div class="form-check form-switch mb-3">
                 <label class="form-check-label" for="redirectionToggle">
-                    Activar redirección de URL:
+                    Activar redirección automática de URL
                 </label>
                 <input class="form-check-input" type="checkbox" role="switch" id="redirectionToggle">
             </div>
 
             <div class="form-check form-switch mb-3">
                 <label class="form-check-label" for="confirmToggle">
-                    Confrimar ante redireccionar:
+                    Confirmar antes redireccionar
                 </label>
                 <input class="form-check-input" type="checkbox" role="switch" id="confirmToggle">
             </div>
 
             <div class="form-check form-switch mb-3">
                 <label class="form-check-label" for="fullscreenToggle">
-                    Activar modo pantalla completa en redirecciones:
+                    Activar modo pantalla completa en redirecciones
                 </label>
                 <input class="form-check-input" type="checkbox" role="switch" id="fullscreenToggle">
+                <i class="bi bi-info-circle text-info" data-bs-toggle="tooltip" data-bs-placement="auto" data-bs-custom-class="custom-tooltip" data-bs-title="En ocaciones no se realiza el cambio a pantalla completa"></i>
             </div>
 
             <div class="form-check form-switch">
                 <label class="form-check-label" for="toastToggle">
-                    Mostrar notificaciones (mensaje toast):
+                    Mostrar notificaciones flotantes
                 </label>
                 <input class="form-check-input" type="checkbox" role="switch" id="toastToggle">
             </div>
@@ -62,16 +70,16 @@
         </div>
     </div>
 
-    <button class="btn btn-primary position-fixed bottom-0 start-0 m-3" id="saveButton" type="button">
+    <button class="btn btn-primary position-fixed bottom-0 start-0 m-3 z-3" id="saveButton" type="button">
         Guardar Opciones
     </button>
 
-    <small class="position-fixed bottom-0 end-0 alert alert-primary m-3 text-muted py-1 px-2 shadow-sm" role="alert">
+    <small class="position-fixed bottom-0 end-0 alert alert-primary m-3 text-muted py-1 px-2 shadow-sm z-3" role="alert">
         by SystemAlex
     </small>
 
     <script src="./js/bootstrap.bundle.min.js"></script>
-    <script src="./js/bootstrap.min.js"></script>
+    <!--<script src="./js/bootstrap.min.js"></script>-->
     <script src="./js/functions.js"></script>
     <script src="./js/options.js"></script>
 </body>
