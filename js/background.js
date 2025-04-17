@@ -10,9 +10,9 @@
     if (details.reason === "install") {
         chrome.storage.sync.set(defaultSettings, () => {
             if (chrome.runtime.lastError) {
-                console.error('Error al establecer la configuración predeterminada:', chrome.runtime.lastError);
+                console.error("Error al establecer la configuración predeterminada:", chrome.runtime.lastError);
             } else {
-                console.log('Configuración predeterminada establecida correctamente:', defaultSettings);
+                console.log("Configuración predeterminada establecida correctamente:", defaultSettings);
             }
         });
         chrome.runtime.openOptionsPage(() => {
@@ -26,7 +26,7 @@
 });
 
 chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'sync') {
+    if (area === "sync") {
         for (let key in changes) {
             const { oldValue, newValue } = changes[key];
             console.log(`La opción '${key}' cambió de ${oldValue} a ${newValue}`);

@@ -2,6 +2,7 @@
   "manifest_version": 3,
   "name": "Video URL to Embed",
   "version": "2.5.15",
+  "default_locale": "es",
   "description": "Alterna entre versión original y video incrustado.",
   "author": "SystemAlex",
   "icons": {
@@ -65,7 +66,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": [ "js/redirectRules.json", "assets/icon128.png" ],
+      "resources": [ "js/redirectRules.json", "assets/icon128.png", "css/bootstrap.min.css" ],
       "matches": [ "<all_urls>" ]
     }
   ]
