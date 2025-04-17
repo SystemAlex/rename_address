@@ -1,7 +1,7 @@
 ﻿{
   "manifest_version": 3,
   "name": "Video URL to Embed",
-  "version": "2.4.9",
+  "version": "2.5.15",
   "description": "Alterna entre versión original y video incrustado.",
   "author": "SystemAlex",
   "icons": {
@@ -39,10 +39,12 @@
         "https://uqload.net/*",
         "https://vidtube.one/*",
         "https://voe.sx/*",
-        "https://www.dailymotion.com/video/*",
-        "https://www.youtube.com/watch?*"
+        "https://www.dailymotion.com/*",
+        "https://www.youtube.com/*",
+        "https://vimeo.com/*",
+        "https://vidmoly.me/w/*"
       ],
-      "js": [ "js/functions.js", "js/redirect.js" ],
+      "js": [ "js/functions.js" ],
       "run_at": "document_start"
     },
     {
@@ -54,7 +56,9 @@
         "https://voe.sx/e/*",
         "https://jennifercertaindevelopment.com/e/*",
         "https://geo.dailymotion.com/*",
-        "https://www.youtube.com/embed/*"
+        "https://www.youtube.com/embed/*",
+        "https://player.vimeo.com/video/*",
+        "https://vidmoly.to/embed-*"
       ],
       "js": [ "js/functions.js", "js/fullscreen.js" ]
     }

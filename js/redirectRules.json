@@ -26,5 +26,13 @@
   {
     "regex": "^https:\\/\\/www\\.youtube\\.com\\/watch\\?v=([^&]+)(&.*)?$",
     "substitution": "https://www.youtube.com/embed/$1"
+  },
+  {
+    "regex": "^https:\\/\\/vimeo\\.com\\/(\\d+)$",
+    "substitution": "https://player.vimeo.com/video/$1"
+  },
+  {
+    "regex": "^https:\\/\\/vidmoly\\.me\\/w\\/([^/]+)$",
+    "substitution": "https://vidmoly.to/embed-$1.html"
   }
 ]

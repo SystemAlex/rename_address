@@ -3,23 +3,23 @@
         fullscreenEnabled: true,
         toastEnabled: true,
         redirectionEnabled: true,
-        redirectionConfirmation: true
+        redirectionConfirmation: true,
+        autoRedirectSPA: true
     };
 
-    // Si es la primera instalación, abrimos la página de opciones
     if (details.reason === "install") {
-        chrome.runtime.openOptionsPage(() => {
-            if (chrome.runtime.lastError) {
-                console.error("Error al abrir la página de opciones:", chrome.runtime.lastError);
-            } else {
-                console.log("Página de opciones abierta correctamente.");
-            }
-        });
         chrome.storage.sync.set(defaultSettings, () => {
             if (chrome.runtime.lastError) {
                 console.error('Error al establecer la configuración predeterminada:', chrome.runtime.lastError);
             } else {
                 console.log('Configuración predeterminada establecida correctamente:', defaultSettings);
+            }
+        });
+        chrome.runtime.openOptionsPage(() => {
+            if (chrome.runtime.lastError) {
+                console.error("Error al abrir la página de opciones:", chrome.runtime.lastError);
+            } else {
+                console.log("Página de opciones abierta correctamente.");
             }
         });
     }
@@ -99,4 +99,10 @@ chrome.tabs.onActivated.addListener(activeInfo => {
             updateIconForTab(tab.id, tab.url);
         }
     });
+});
+
+chrome.action.onClicked.addListener((tab) => {
+    if (tab.id && tab.url) {
+        chrome.tabs.sendMessage(tab.id, { action: "toggleRedirect" });
+    }
 });

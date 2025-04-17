@@ -1,9 +1,11 @@
 ﻿function saveOptions() {
     const fullscreenEnabled = document.getElementById("fullscreenToggle").checked;
     const toastEnabled = document.getElementById("toastToggle").checked;
-    const redirectionEnabled = document.getElementById('redirectionToggle').checked;
+    //const redirectionEnabled = document.getElementById('redirectionToggle').checked;
     const redirectionConfirmation = document.getElementById('confirmToggle').checked;
-    chrome.storage.sync.set({ fullscreenEnabled, toastEnabled, redirectionEnabled, redirectionConfirmation }, function () {
+    const autoRedirectSPA = document.getElementById('autoRedirectSPAToggle').checked;
+    //chrome.storage.sync.set({ fullscreenEnabled, toastEnabled, redirectionEnabled, redirectionConfirmation, autoRedirectSPA }, function () {
+    chrome.storage.sync.set({ fullscreenEnabled, toastEnabled, redirectionConfirmation, autoRedirectSPA }, function () {
         showToast("Opciones guardadas!");
     });
 }
@@ -14,14 +16,24 @@ function restoreOptions() {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
     chrome.storage.sync.get(
-        ["fullscreenEnabled", "toastEnabled", "redirectionEnabled", "redirectionConfirmation"],
+        //["fullscreenEnabled", "toastEnabled", "redirectionEnabled", "redirectionConfirmation", "autoRedirectSPA"],
+        ["fullscreenEnabled", "toastEnabled", "redirectionConfirmation", "autoRedirectSPA"],
         function (data) {
             document.getElementById("fullscreenToggle").checked = data.fullscreenEnabled;
             document.getElementById("toastToggle").checked = data.toastEnabled;
-            document.getElementById('redirectionToggle').checked = data.redirectionEnabled;
+            //document.getElementById('redirectionToggle').checked = data.redirectionEnabled;
             document.getElementById('confirmToggle').checked = data.redirectionConfirmation;
+            document.getElementById('autoRedirectSPAToggle').checked = data.autoRedirectSPA;
         }
     );
+    //redirectionToggle.addEventListener("change", function () {
+    //    if (!this.checked) {
+    //        autoRedirectSPAToggle.checked = false;
+    //        autoRedirectSPAToggle.disabled = true;
+    //    } else {
+    //        autoRedirectSPAToggle.disabled = false;
+    //    }
+    //});
 }
 
 document.addEventListener("DOMContentLoaded", restoreOptions);
