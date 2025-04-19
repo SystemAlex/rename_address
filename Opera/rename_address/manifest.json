@@ -1,0 +1,73 @@
+﻿{
+  "manifest_version": 3,
+  "name": "Video URL to Embed",
+  "version": "2.5.15",
+  "default_locale": "es",
+  "description": "Alterna entre versión original y video incrustado.",
+  "author": "SystemAlex",
+  "icons": {
+    "16": "./assets/icon16.png",
+    "32": "./assets/icon32.png",
+    "128": "./assets/icon128.png"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "notifications",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess"
+  ],
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "background": {
+    "service_worker": "./js/background.js"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "action": {
+    "default_icon": "./assets/icon128.png",
+    "default_title": "Alterna Vista de Video"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://streamtape.com/v/*",
+        "https://sendvid.com/*",
+        "https://uqload.net/*",
+        "https://vidtube.one/*",
+        "https://voe.sx/*",
+        "https://www.dailymotion.com/*",
+        "https://www.youtube.com/*",
+        "https://vimeo.com/*",
+        "https://vidmoly.me/w/*"
+      ],
+      "js": [ "js/functions.js" ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://streamtape.com/e/*",
+        "https://sendvid.com/embed/*",
+        "https://uqload.net/embed-*",
+        "https://vidtube.one/embed-*",
+        "https://voe.sx/e/*",
+        "https://jennifercertaindevelopment.com/e/*",
+        "https://geo.dailymotion.com/*",
+        "https://www.youtube.com/embed/*",
+        "https://player.vimeo.com/video/*",
+        "https://vidmoly.to/embed-*"
+      ],
+      "js": [ "js/functions.js", "js/fullscreen.js" ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [ "js/redirectRules.json", "assets/icon128.png", "css/bootstrap.min.css" ],
+      "matches": [ "<all_urls>" ]
+    }
+  ]
+}
