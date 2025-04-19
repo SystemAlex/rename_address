@@ -86,6 +86,7 @@ async function fetchData(url) {
         const doc = new DOMParser().parseFromString(html, "text/html");
         const faviconLink = doc.querySelector("link[rel*='icon']");
         const faviconUrl = faviconLink.href.replace(location.origin + "/", "").replace("moz-extension://", "https://");
+        let newfaviconUrl = null;
 
         if (faviconUrl.startsWith("https://")) {
             newfaviconUrl = faviconUrl;
@@ -93,7 +94,7 @@ async function fetchData(url) {
             newfaviconUrl = url + faviconUrl;
         }
 
-        data = {
+        let data = {
             "favicon": faviconLink ? newfaviconUrl : null,
             "title": doc.title ? doc.title : null,
         }

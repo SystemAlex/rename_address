@@ -29,5 +29,6 @@
 }
 
 window.onload = function () {
-    enterFullscreen();
+    //enterFullscreen(); 
+    showToast("Redirección completada.");
 };

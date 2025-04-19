@@ -79,11 +79,19 @@ function updateIconForTab(tabId, currentUrl) {
                 iconPath = errorIconPath;
             }
 
-            chrome.action.setIcon({ tabId, path: iconPath });
+            const actionAPI = chrome.action || chrome.browserAction;
+            if (actionAPI && typeof actionAPI.setIcon === "function") {
+                actionAPI.setIcon({ tabId: tabId, path: iconPath });
+            } else {
+                console.error("No se pudo actualizar el icono, API no encontrada.");
+            }
         })
         .catch(error => {
             console.error("Error al actualizar el ícono:", error);
-            chrome.action.setIcon({ tabId, path: errorIconPath });
+            const actionAPI = chrome.action || chrome.browserAction;
+            if (actionAPI && typeof actionAPI.setIcon === "function") {
+                actionAPI.setIcon({ tabId: tabId, path: errorIconPath });
+            }
         });
 }
 
@@ -101,8 +109,13 @@ chrome.tabs.onActivated.addListener(activeInfo => {
     });
 });
 
-chrome.action.onClicked.addListener((tab) => {
-    if (tab.id && tab.url) {
-        chrome.tabs.sendMessage(tab.id, { action: "toggleRedirect" });
-    }
-});
+const actionAPI = chrome.action || chrome.browserAction;
+if (actionAPI && typeof actionAPI.onClicked === "object") {
+    actionAPI.onClicked.addListener((tab) => {
+        if (tab && tab.id && tab.url) {
+            chrome.tabs.sendMessage(tab.id, { action: "toggleRedirect" });
+        }
+    });
+} else {
+    console.error("No se encontró API para manejar el click en el ícono.");
+}
