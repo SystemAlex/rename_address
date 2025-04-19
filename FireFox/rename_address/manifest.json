@@ -1,7 +1,7 @@
 ﻿{
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "Video URL to Embed",
-  "version": "2.5.15",
+  "version": "2.5.17",
   "default_locale": "es",
   "description": "Alterna entre versión original y video incrustado.",
   "author": "SystemAlex",
@@ -14,21 +14,26 @@
     "storage",
     "tabs",
     "notifications",
-    "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess"
-  ],
-  "host_permissions": [
+    "webRequest",
+    "webRequestBlocking",
     "https://*/*",
     "http://*/*"
   ],
   "background": {
-    "service_worker": "./js/background.js"
+    "scripts": [ "js/background.js" ],
+    "persistent": true
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "video-url-to-embed@systemalex.com"
+    }
   },
   "options_ui": {
     "page": "options.html",
-    "open_in_tab": true
+    "open_in_tab": true,
+    "browser_style": true
   },
-  "action": {
+  "browser_action": {
     "default_icon": "./assets/icon128.png",
     "default_title": "Alterna Vista de Video"
   },
@@ -65,9 +70,8 @@
     }
   ],
   "web_accessible_resources": [
-    {
-      "resources": [ "js/redirectRules.json", "assets/icon128.png", "css/bootstrap.min.css" ],
-      "matches": [ "<all_urls>" ]
-    }
+    "js/redirectRules.json",
+    "assets/icon128.png",
+    "css/bootstrap.min.css"
   ]
 }

@@ -86,6 +86,11 @@
 
     dialog.appendChild(form);
 
+    const brand = document.createElement("small");
+    brand.className = "position-fixed bottom-0 end-0 alert alert-primary m-3 text-muted py-1 px-2 shadow-sm z-3";
+    brand.textContent = "by SystemAlex";
+    dialog.appendChild(brand);
+
     document.body.appendChild(dialog);
 
     return new Promise((resolve) => {

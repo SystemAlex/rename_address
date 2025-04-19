@@ -79,11 +79,11 @@ function updateIconForTab(tabId, currentUrl) {
                 iconPath = errorIconPath;
             }
 
-            chrome.action.setIcon({ tabId, path: iconPath });
+            chrome.browserAction.setIcon({ tabId: tabId, path: iconPath });
         })
         .catch(error => {
             console.error("Error al actualizar el ícono:", error);
-            chrome.action.setIcon({ tabId, path: errorIconPath });
+            chrome.browserAction.setIcon({ tabId: tabId, path: errorIconPath });
         });
 }
 
@@ -101,7 +101,7 @@ chrome.tabs.onActivated.addListener(activeInfo => {
     });
 });
 
-chrome.action.onClicked.addListener((tab) => {
+chrome.browserAction.onClicked.addListener((tab) => {
     if (tab.id && tab.url) {
         chrome.tabs.sendMessage(tab.id, { action: "toggleRedirect" });
     }

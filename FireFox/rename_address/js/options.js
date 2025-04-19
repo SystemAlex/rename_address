@@ -1,11 +1,11 @@
 ﻿function saveOptions() {
-    const fullscreenEnabled = document.getElementById("fullscreenToggle").checked;
+    //const fullscreenEnabled = document.getElementById("fullscreenToggle").checked;
     const toastEnabled = document.getElementById("toastToggle").checked;
     //const redirectionEnabled = document.getElementById("redirectionToggle").checked;
     const redirectionConfirmation = document.getElementById("confirmToggle").checked;
     const autoRedirectSPA = document.getElementById("autoRedirectSPAToggle").checked;
     //chrome.storage.sync.set({ fullscreenEnabled, toastEnabled, redirectionEnabled, redirectionConfirmation, autoRedirectSPA }, function () {
-    chrome.storage.sync.set({ fullscreenEnabled, toastEnabled, redirectionConfirmation, autoRedirectSPA }, function () {
+    chrome.storage.sync.set({ toastEnabled, redirectionConfirmation, autoRedirectSPA }, function () {
         showToast("Opciones guardadas!");
     });
 }
@@ -17,9 +17,9 @@ function restoreOptions() {
     });
     chrome.storage.sync.get(
         //["fullscreenEnabled", "toastEnabled", "redirectionEnabled", "redirectionConfirmation", "autoRedirectSPA"],
-        ["fullscreenEnabled", "toastEnabled", "redirectionConfirmation", "autoRedirectSPA"],
+        ["toastEnabled", "redirectionConfirmation", "autoRedirectSPA"],
         function (data) {
-            document.getElementById("fullscreenToggle").checked = data.fullscreenEnabled;
+            //document.getElementById("fullscreenToggle").checked = data.fullscreenEnabled;
             document.getElementById("toastToggle").checked = data.toastEnabled;
             //document.getElementById("redirectionToggle").checked = data.redirectionEnabled;
             document.getElementById("confirmToggle").checked = data.redirectionConfirmation;
@@ -85,7 +85,7 @@ async function fetchData(url) {
         const html = await response.text();
         const doc = new DOMParser().parseFromString(html, "text/html");
         const faviconLink = doc.querySelector("link[rel*='icon']");
-        const faviconUrl = faviconLink.href.replace(location.origin + "/", "").replace("chrome-extension://", "https://");
+        const faviconUrl = faviconLink.href.replace(location.origin + "/", "").replace("moz-extension://", "https://");
 
         if (faviconUrl.startsWith("https://")) {
             newfaviconUrl = faviconUrl;
