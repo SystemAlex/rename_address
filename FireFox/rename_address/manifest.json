@@ -1,7 +1,7 @@
 ﻿{
   "manifest_version": 2,
   "name": "Video URL to Embed",
-  "version": "2.5.17",
+  "version": "2.5.18",
   "default_locale": "es",
   "description": "Alterna entre versión original y video incrustado.",
   "author": "SystemAlex",
@@ -13,6 +13,7 @@
   "permissions": [
     "storage",
     "tabs",
+    "activeTab",
     "notifications",
     "webRequest",
     "webRequestBlocking",

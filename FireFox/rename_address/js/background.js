@@ -1,4 +1,4 @@
-﻿chrome.runtime.onInstalled.addListener((details) => {
+﻿browser.runtime.onInstalled.addListener((details) => {
     const defaultSettings = {
         fullscreenEnabled: true,
         toastEnabled: true,
@@ -8,38 +8,53 @@
     };
 
     if (details.reason === "install") {
-        chrome.storage.sync.set(defaultSettings, () => {
-            if (chrome.runtime.lastError) {
-                console.error("Error al establecer la configuración predeterminada:", chrome.runtime.lastError);
-            } else {
-                console.log("Configuración predeterminada establecida correctamente:", defaultSettings);
-            }
+        browser.storage.sync.set(defaultSettings).catch((error) => {
+            console.error("Error al establecer la configuración predeterminada:", error);
         });
-        chrome.runtime.openOptionsPage(() => {
-            if (chrome.runtime.lastError) {
-                console.error("Error al abrir la página de opciones:", chrome.runtime.lastError);
-            } else {
-                console.log("Página de opciones abierta correctamente.");
-            }
+        browser.runtime.openOptionsPage().catch((error) => {
+            console.error("Error al abrir la página de opciones:", error);
         });
     }
+
+    browser.tabs.query({ active: true, currentWindow: true })
+        .then((tabs) => {
+            if (tabs.length > 0) {
+                const currentTab = tabs[0];
+                updateIconForTab(currentTab.id, currentTab.url);
+            }
+        })
+        .catch((error) => {
+            console.error("Error al consultar las pestañas:", error);
+        });
 });
 
-chrome.storage.onChanged.addListener((changes, area) => {
+browser.storage.onChanged.addListener((changes, area) => {
     if (area === "sync") {
         for (let key in changes) {
-            const { oldValue, newValue } = changes[key];
-            console.log(`La opción '${key}' cambió de ${oldValue} a ${newValue}`);
+            const { newValue } = changes[key];
+            // Actualiza configuraciones dinámicas si es necesario
         }
     }
 });
 
-function updateIconForTab(tabId, currentUrl) {
-    const rulesUrl = chrome.runtime.getURL("js/redirectRules.json");
+browser.runtime.onStartup.addListener(() => {
+    browser.tabs.query({ active: true, currentWindow: true })
+        .then((tabs) => {
+            if (tabs.length > 0) {
+                const currentTab = tabs[0];
+                updateIconForTab(currentTab.id, currentTab.url);
+            }
+        })
+        .catch((error) => {
+            console.error("Error al actualizar el ícono después del inicio:", error);
+        });
+});
 
-    const originalIconPath = chrome.runtime.getURL("assets/icon128_off.png");
-    const embedIconPath = chrome.runtime.getURL("assets/icon128_on.png");
-    const errorIconPath = chrome.runtime.getURL("assets/icon128_error.png");
+function updateIconForTab(tabId, currentUrl) {
+    const rulesUrl = browser.runtime.getURL("js/redirectRules.json");
+    const originalIconPath = browser.runtime.getURL("assets/icon128.png");
+    const embedIconPath = browser.runtime.getURL("assets/icon128_on.png");
+    const errorIconPath = browser.runtime.getURL("assets/icon128_error.png");
 
     fetch(rulesUrl)
         .then(response => {
@@ -49,60 +64,85 @@ function updateIconForTab(tabId, currentUrl) {
             return response.json();
         })
         .then(rules => {
-            let state = "error";
+            return getMatch(tabId, rules, currentUrl).then(match => {
+                const iconPath = match
+                    ? (match.isOriginal ? originalIconPath : embedIconPath)
+                    : errorIconPath;
 
-            for (let rule of rules) {
-                const originalRegex = new RegExp(rule.regex);
-                if (originalRegex.test(currentUrl)) {
-                    state = "original";
-                    break;
+                const actionAPI = browser.action || browser.browserAction;
+                if (actionAPI && typeof actionAPI.setIcon === "function") {
+                    actionAPI.setIcon({ tabId: tabId, path: iconPath });
                 }
-            }
-
-            if (state === "error") {
-                for (let rule of rules) {
-                    const indexDollar = rule.substitution.indexOf("$1");
-                    const embedFixed = indexDollar !== -1 ? rule.substitution.substring(0, indexDollar) : rule.substitution;
-                    if (currentUrl.startsWith(embedFixed)) {
-                        state = "embed";
-                        break;
-                    }
-                }
-            }
-
-            let iconPath;
-            if (state === "original") {
-                iconPath = originalIconPath;
-            } else if (state === "embed") {
-                iconPath = embedIconPath;
-            } else {
-                iconPath = errorIconPath;
-            }
-
-            chrome.browserAction.setIcon({ tabId: tabId, path: iconPath });
+            });
         })
-        .catch(error => {
+        .catch((error) => {
             console.error("Error al actualizar el ícono:", error);
-            chrome.browserAction.setIcon({ tabId: tabId, path: errorIconPath });
+            const actionAPI = browser.action || browser.browserAction;
+            if (actionAPI && typeof actionAPI.setIcon === "function") {
+                actionAPI.setIcon({ tabId: tabId, path: errorIconPath });
+            }
         });
 }
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+function getMatch(tabId, rules, currentUrl) {
+    const port = browser.tabs.connect(tabId, { name: "content-connection" });
+    return new Promise((resolve) => {
+        port.postMessage({ action: "getMatchedRule", rules, currentUrl });
+
+        port.onMessage.addListener((response) => {
+            resolve(response.match);
+        });
+
+        port.onDisconnect.addListener(() => {
+            resolve(null);
+        });
+    });
+}
+
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status === "complete" && tab.url) {
         updateIconForTab(tabId, tab.url);
     }
 });
 
-chrome.tabs.onActivated.addListener(activeInfo => {
-    chrome.tabs.get(activeInfo.tabId, tab => {
+browser.tabs.onActivated.addListener(async (activeInfo) => {
+    try {
+        const tab = await browser.tabs.get(activeInfo.tabId);
         if (tab && tab.url) {
             updateIconForTab(tab.id, tab.url);
         }
-    });
-});
-
-chrome.browserAction.onClicked.addListener((tab) => {
-    if (tab.id && tab.url) {
-        chrome.tabs.sendMessage(tab.id, { action: "toggleRedirect" });
+    } catch (error) {
+        console.error("Error al obtener los detalles de la pestaña al activarse:", error);
     }
 });
+
+const actionAPI = browser.action || browser.browserAction;
+if (actionAPI && actionAPI.onClicked) {
+    actionAPI.onClicked.addListener((tab) => {
+        if (tab && tab.id && tab.url) {
+            const port = browser.tabs.connect(tab.id, { name: "content-connection" });
+            port.postMessage({ action: "toggleRedirect", currentUrl: tab.url });
+
+            port.onMessage.addListener((response) => { });
+
+            port.onDisconnect.addListener(() => { });
+        }
+    });
+} else {
+    console.error("No se encontró API para manejar el clic en el ícono.");
+}
+
+setTimeout(() => {
+    browser.tabs.query({ active: true, currentWindow: true })
+        .then((tabs) => {
+            if (tabs.length > 0) {
+                const currentTab = tabs[0];
+                updateIconForTab(currentTab.id, currentTab.url);
+            } else {
+                console.warn("No se encontró ninguna pestaña activa.");
+            }
+        })
+        .catch((error) => {
+            console.error("Error al actualizar el ícono tras reactivación:", error);
+        });
+}, 0);

@@ -23,6 +23,13 @@
             }
         });
     }
+
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs.length > 0) {
+            const currentTab = tabs[0];
+            updateIconForTab(currentTab.id, currentTab.url);
+        }
+    });
 });
 
 chrome.storage.onChanged.addListener((changes, area) => {
@@ -37,7 +44,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
 function updateIconForTab(tabId, currentUrl) {
     const rulesUrl = chrome.runtime.getURL("js/redirectRules.json");
 
-    const originalIconPath = chrome.runtime.getURL("assets/icon128_off.png");
+    const originalIconPath = chrome.runtime.getURL("assets/icon128.png");
     const embedIconPath = chrome.runtime.getURL("assets/icon128_on.png");
     const errorIconPath = chrome.runtime.getURL("assets/icon128_error.png");
 
@@ -49,42 +56,21 @@ function updateIconForTab(tabId, currentUrl) {
             return response.json();
         })
         .then(rules => {
-            let state = "error";
-
-            for (let rule of rules) {
-                const originalRegex = new RegExp(rule.regex);
-                if (originalRegex.test(currentUrl)) {
-                    state = "original";
-                    break;
+            getMatch(tabId, rules, currentUrl).then(match => {
+                let iconPath;
+                if (match) {
+                    iconPath = match.isOriginal ? originalIconPath : embedIconPath;
+                } else {
+                    iconPath = errorIconPath;
                 }
-            }
 
-            if (state === "error") {
-                for (let rule of rules) {
-                    const indexDollar = rule.substitution.indexOf("$1");
-                    const embedFixed = indexDollar !== -1 ? rule.substitution.substring(0, indexDollar) : rule.substitution;
-                    if (currentUrl.startsWith(embedFixed)) {
-                        state = "embed";
-                        break;
-                    }
+                const actionAPI = chrome.action || chrome.browserAction;
+                if (actionAPI && typeof actionAPI.setIcon === "function") {
+                    actionAPI.setIcon({ tabId: tabId, path: iconPath });
+                } else {
+                    console.error("No se pudo actualizar el icono, API no encontrada.");
                 }
-            }
-
-            let iconPath;
-            if (state === "original") {
-                iconPath = originalIconPath;
-            } else if (state === "embed") {
-                iconPath = embedIconPath;
-            } else {
-                iconPath = errorIconPath;
-            }
-
-            const actionAPI = chrome.action || chrome.browserAction;
-            if (actionAPI && typeof actionAPI.setIcon === "function") {
-                actionAPI.setIcon({ tabId: tabId, path: iconPath });
-            } else {
-                console.error("No se pudo actualizar el icono, API no encontrada.");
-            }
+            });
         })
         .catch(error => {
             console.error("Error al actualizar el ícono:", error);
@@ -93,6 +79,19 @@ function updateIconForTab(tabId, currentUrl) {
                 actionAPI.setIcon({ tabId: tabId, path: errorIconPath });
             }
         });
+}
+
+async function getMatch(tabId, rules, currentUrl) {
+    try {
+        const match = await chrome.tabs.sendMessage(tabId, {
+            action: "getMatchedRule",
+            rules: rules,
+            currentUrl: currentUrl
+        });
+        return match;
+    } catch (error) {
+        return null;
+    }
 }
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {

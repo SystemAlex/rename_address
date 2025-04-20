@@ -13,22 +13,22 @@
 
     const style = document.createElement("style");
     style.textContent = `
-    html {
-        font-size: 16px !important;
-    }
+        html {
+            font-size: 16px !important;
+        }
 
-    .btn:focus-visible {
-        color: var(--bs-btn-hover-color) !important;
-        background-color: var(--bs-btn-hover-bg) !important;
-        border-color: var(--bs-btn-hover-border-color) !important;
-        outline: 0 !important;
-        box-shadow: var(--bs-btn-focus-box-shadow) !important;
-    }
+        .btn:focus-visible {
+            color: var(--bs-btn-hover-color) !important;
+            background-color: var(--bs-btn-hover-bg) !important;
+            border-color: var(--bs-btn-hover-border-color) !important;
+            outline: 0 !important;
+            box-shadow: var(--bs-btn-focus-box-shadow) !important;
+        }
 
-    #custom-confirm-dialog::backdrop {
-        backdrop-filter: blur(14px) !important;
-        background-color: rgba(var(--bs-primary-rgb), 0.2) !important;
-    }`;
+        #custom-confirm-dialog::backdrop {
+            backdrop-filter: blur(14px) !important;
+            background-color: rgba(var(--bs-primary-rgb), 0.2) !important;
+        }`;
 
     const dialog = document.createElement("dialog");
     dialog.id = "custom-confirm-dialog";
@@ -52,7 +52,7 @@
     header.appendChild(logo);
 
     const title = document.createElement("h6");
-    title.textContent = chrome.runtime.getManifest().name; // "Confirmación de redirección";
+    title.textContent = chrome.runtime.getManifest().name;
     title.className = "text-dark m-0 fw-bold";
     header.appendChild(title);
 
@@ -91,35 +91,37 @@
     brand.textContent = "by SystemAlex";
     dialog.appendChild(brand);
 
-    document.body.appendChild(dialog);
+    if (document.body) {
+        document.body.appendChild(dialog);
+    } else {
+        document.addEventListener("DOMContentLoaded", () => {
+            document.body.appendChild(dialog);
+        });
+    }
 
     return new Promise((resolve) => {
         const dialog = document.getElementById("custom-confirm-dialog");
         const messageElement = document.getElementById("custom-confirm-message");
 
-        // Actualizamos el mensaje del diálogo
         messageElement.textContent = message;
 
-        // Definimos un manejador para el evento "close"
         const onClose = () => {
-            // El valor del diálogo se determina con dialog.returnValue
             resolve(dialog.returnValue === "confirm");
             dialog.removeEventListener("close", onClose);
             dialog.remove();
         };
 
         dialog.addEventListener("close", onClose);
-
-        // Mostrar el diálogo de forma modal
         dialog.showModal();
     });
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "showToast" && typeof showToast === "function") {
-        showToast(request.message);
-    } else if (request.action === "toggleRedirect") {
+    if (request.action === "toggleRedirect" && typeof toggleRedirect === "function") {
         toggleRedirect();
+    } else if (request.action === "getMatchedRule" && typeof getMatchedRule === "function") {
+        const match = getMatchedRule(request.rules, request.currentUrl);
+        sendResponse(match);
     }
 });
 
@@ -156,7 +158,7 @@ function showToast(message) {
         toast.style.border = "1px solid #a3cfbb";
         toast.style.boxSizing = "border-box";
         toast.style.color = "#0a3622";
-        toast.style.fontFamily ='system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"';
+        toast.style.fontFamily = 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"';
         toast.style.fontSize = "16px";
         toast.style.fontWeight = "400";
         toast.style.lineHeight = "1.5";
@@ -176,75 +178,40 @@ function showToast(message) {
     });
 }
 
-function toggleRedirect() {
+async function toggleRedirect() {
     const currentUrl = window.location.href;
     const rulesUrl = chrome.runtime.getURL("js/redirectRules.json");
 
-    fetch(rulesUrl)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Error al cargar las reglas");
-            }
-            return response.json();
-        })
-        .then(rules => {
-            let matchedRule = null;
-            let isOriginal = false;
+    try {
+        const response = await fetch(rulesUrl);
+        if (!response.ok) {
+            throw new Error("Error al cargar las reglas");
+        }
+        const rules = await response.json();
 
-            for (let rule of rules) {
-                const regex = new RegExp(rule.regex);
-                if (regex.test(currentUrl)) {
-                    matchedRule = rule;
-                    isOriginal = true;
-                    break;
-                }
-            }
+        const match = getMatchedRule(rules, currentUrl);
+        if (!match) {
+            return;
+        }
 
-            if (!matchedRule) {
-                for (let rule of rules) {
-                    const indexDollar = rule.substitution.indexOf("$1");
-                    const embedFixed = indexDollar !== -1 ? rule.substitution.substring(0, indexDollar) : rule.substitution;
-                    if (currentUrl.startsWith(embedFixed)) {
-                        matchedRule = rule;
-                        isOriginal = false;
-                        break;
-                    }
-                }
-            }
+        const { rule: matchedRule, isOriginal } = match;
+        const { newUrl, message } = generateNewUrl(matchedRule, currentUrl, isOriginal);
 
-            if (!matchedRule) {
-                return;
-            }
-
-            let newUrl;
-            if (isOriginal) {
-                const regex = new RegExp(matchedRule.regex);
-                newUrl = currentUrl.replace(regex, matchedRule.substitution);
-                showToast("Cambiando a vista incrustada.");
-            } else {
-                const indexDollar = matchedRule.substitution.indexOf("$1");
-                const embedFixed = indexDollar !== -1 ? matchedRule.substitution.substring(0, indexDollar) : matchedRule.substitution;
-                const param = currentUrl.substring(embedFixed.length);
-
-                let originalPrefix = matchedRule.regex
-                    .replace(/^\^/, '')
-                    .replace(/\(.*$/, '');
-                originalPrefix = originalPrefix.replace(/\\\//g, '/').replace(/\\\./g, '.');
-
-                newUrl = originalPrefix + param;
-                showToast("Cambiando a vista original.");
-            }
-            console.log("Redirigiendo a: " + newUrl);
-
-            sessionStorage.setItem("manualToggle", "true");
-            window.location.href = newUrl;
-        })
-        .catch(error => {
-            console.error("Error en toggleRedirect:", error);
-        });
+        showToast(message);
+        console.log("Redirigiendo a: " + newUrl);
+        sessionStorage.setItem("manualToggle", "true");
+        window.location.href = newUrl;
+    } catch (error) {
+        console.error("Error en toggleRedirect:", error);
+    }
 }
 
 async function autoRedirect() {
+    if (!document.body) {
+        document.addEventListener("DOMContentLoaded", autoRedirect);
+        return;
+    }
+
     if (sessionStorage.getItem("manualToggle")) {
         return;
     }
@@ -270,7 +237,6 @@ async function autoRedirect() {
                     if (regex.test(currentUrl)) {
                         if (config.redirectionConfirmation) {
                             const confirmed = await customConfirmDialog("¿Desea redirigir a la versión de video incrustado?");
-                            //const confirmed = window.confirm("¿Desea redirigir a la versión de video incrustado?");
                             if (!confirmed) {
                                 showToast("Redirección cancelada.");
                                 return;
@@ -280,7 +246,6 @@ async function autoRedirect() {
                         } else {
                             showToast("Redirección automática.");
                         }
-
                         const newUrl = currentUrl.replace(regex, rule.substitution);
                         window.location.href = newUrl;
                         break;
@@ -338,3 +303,56 @@ document.addEventListener("pointerdown", function (event) {
         sessionStorage.removeItem("manualToggle");
     }
 }, { capture: true });
+
+function findRuleForOriginal(rules, currentUrl) {
+    for (const rule of rules) {
+        const regex = new RegExp(rule.regex);
+        if (regex.test(currentUrl)) {
+            return { rule, isOriginal: true };
+        }
+    }
+    return null;
+}
+
+function findRuleForEmbed(rules, currentUrl) {
+    for (const rule of rules) {
+        const indexDollar = rule.substitution.indexOf("$1");
+        const embedFixed = indexDollar !== -1 ? rule.substitution.substring(0, indexDollar) : rule.substitution;
+        if (currentUrl.startsWith(embedFixed)) {
+            return { rule, isOriginal: false };
+        }
+    }
+    return null;
+}
+
+function getMatchedRule(rules, currentUrl) {
+    let match = findRuleForOriginal(rules, currentUrl);
+    if (!match) {
+        match = findRuleForEmbed(rules, currentUrl);
+    }
+    return match;
+}
+
+function generateNewUrl(matchedRule, currentUrl, isOriginal) {
+    if (isOriginal) {
+        const regex = new RegExp(matchedRule.regex);
+        return {
+            newUrl: currentUrl.replace(regex, matchedRule.substitution),
+            message: "Cambiando a vista incrustada."
+        };
+    } else {
+        const indexDollar = matchedRule.substitution.indexOf("$1");
+        const embedFixed = indexDollar !== -1 ? matchedRule.substitution.substring(0, indexDollar) : matchedRule.substitution;
+        const param = currentUrl.substring(embedFixed.length);
+
+        let originalPrefix = matchedRule.regex
+            .replace(/^\^/, '')
+            .replace(/\(.*$/, '');
+        originalPrefix = originalPrefix.replace(/\\\//g, '/').replace(/\\\./g, '.');
+
+        return {
+            newUrl: originalPrefix + param,
+            message: "Cambiando a vista original."
+        };
+    }
+}
