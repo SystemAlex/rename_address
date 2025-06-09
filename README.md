@@ -1,4 +1,6 @@
-# 🎬 Complemento para Navegadores: Alterna entre versión original y video incrustado
+# 🎬 Complemento para Navegadores
+
+## Alterna entre versión original y video incrustado
 
 ¿Te gustaría disfrutar de tus videos favoritos sin distracciones? Este complemento te permite cambiar fácilmente al modo “video incrustado”: ver solo el video, utilizando toda la pantalla, sin el resto del contenido de la página original. ¡Ideal para los amantes de los videos online!
 
