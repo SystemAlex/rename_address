@@ -38,5 +38,10 @@
 
 ---
 
+## 📥 Instálalo en tu navegador
+
+- **Edge**: [Video URL to Embed - Microsoft Edge Addons](https://microsoftedge.microsoft.com/addons/detail/video-url-to-embed/galhmojlbpmjldmkapoeemeabmimmgmk)
+- **Firefox**: [Video URL to Embed - Firefox Add-ons](https://addons.mozilla.org/es-AR/firefox/addon/video-url-to-embed/)
+
 ¡Disfruta tus videos sin distracciones y aprovecha al máximo tu pantalla!  
 ¿Tienes sugerencias o quieres aportar ideas? ¡No dudes en colaborar!
